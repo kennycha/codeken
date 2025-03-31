@@ -1,8 +1,16 @@
+import { RouterProvider } from "react-router-dom";
+import router from "./router";
+import { AuthProvider } from "./store/AuthContext";
+import { GlobalStyle } from "./styles/GlobalStyle";
+
 function App() {
   return (
-    <div>
-      <h1>Hello World</h1>
-    </div>
+    <>
+      <GlobalStyle />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </>
   );
 }
 

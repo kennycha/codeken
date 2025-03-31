@@ -1,18 +1,18 @@
-# SPEC-001: CodePen Clone with React & bknd
+# SPEC-001: CodePen Clone with React & Supabase
 
 ## Background
 
-CodePen is a popular online code editor that allows developers to write and test HTML, CSS, and JavaScript in real time. This project aims to build a similar application using React for the frontend and bknd.io for backend functionalities such as data storage and API handling. By leveraging bknd, we can reduce backend development efforts while maintaining flexibility and scalability.
+CodePen is a popular online code editor that allows developers to write and test HTML, CSS, and JavaScript in real time. This project aims to build a similar application using React for the frontend and Supabase for backend functionalities such as data storage and API handling. By leveraging Supabase, we can reduce backend development efforts while maintaining flexibility and scalability.
 
 ## Requirements
 
-1. HTML, CSS, and TypeScript code editing functionality using Monaco Editor
+1. HTML, CSS, and JavaScript code editing functionality using Monaco Editor
 
 2. Real-time preview of the code execution inside an iframe
 
-3. Code storage and retrieval via bknd.io
+3. Code storage and retrieval via Supabase
 
-4. User authentication using bknd.io
+4. User authentication using Supabase Auth
 
 5. React-based UI with modular components
 
@@ -30,10 +30,10 @@ actor User
 
 User -> ReactApp: Open Code Editor
 ReactApp -> MonacoEditor: Load Editor
-User -> MonacoEditor: Type HTML, CSS, TypeScript
+User -> MonacoEditor: Type HTML, CSS, JavaScript
 MonacoEditor -> iframe: Update Preview in Real-time
-ReactApp -> bknd.io: Save Code Snippet
-ReactApp <- bknd.io: Retrieve Code Snippet
+ReactApp -> Supabase: Save Ken(Code Snippet)
+ReactApp <- Supabase: Retrieve Ken
 
 @enduml
 
@@ -41,13 +41,13 @@ ReactApp <- bknd.io: Retrieve Code Snippet
 
 Frontend: React (with TypeScript), Monaco Editor
 
-Backend: bknd.io (GraphQL & REST APIs)
+Backend: Supabase (PostgreSQL & REST APIs)
 
-Storage: bknd.io Database (NoSQL)
+Storage: Supabase Database (PostgreSQL)
 
-### Data Model (bknd.io)
+### Data Model (Supabase)
 
-Snippet Collection:
+Kens Table:
 
 id (UUID, Primary Key)
 
@@ -57,15 +57,13 @@ html (Text)
 
 css (Text)
 
-typescript (Text)
+javascript (Text)
 
 created_at (Timestamp)
 
 updated_at (Timestamp)
 
-user_id (Foreign Key to User)
-
-User Collection (Handled by bknd.io Authentication)
+User Management (Handled by Supabase Auth)
 
 ## Implementation
 
@@ -75,29 +73,29 @@ User Collection (Handled by bknd.io Authentication)
 
 - Install dependencies: Monaco Editor, React Query, Styled-Components
 
-- Integrate bknd.io
+- Integrate Supabase Client
 
 - Configure authentication for users
 
-- Define API endpoints for saving/loading code snippets
+- Define API endpoints for saving/loading kens
 
 - Develop Code Editor
 
 - Implement Monaco Editor component
 
-- Create state management for HTML, CSS, and TypeScript
+- Create state management for HTML, CSS, and JavaScript
 
 - Implement Live Preview
 
 - Render iframe and update content dynamically
 
-- Connect to bknd.io
+- Connect to Supabase
 
-- Store and retrieve snippets via REST API
+- Store and retrieve kens via Supabase Client
 
 ## Milestones
 
-Week 1: Setup project, install dependencies, configure bknd.io
+Week 1: Setup project, install dependencies, configure Supabase
 
 Week 2: Implement Monaco Editor and real-time preview
 
