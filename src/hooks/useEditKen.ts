@@ -1,4 +1,4 @@
-import { mutate } from "swr/_internal";
+import { mutate } from "swr";
 import { updateKen } from "../services/ken";
 import { KenUpdate } from "../types";
 

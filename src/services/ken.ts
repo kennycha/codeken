@@ -31,23 +31,23 @@ export const getKen = async (id: number) => {
 };
 
 export const createKen = async (ken: KenInsert) => {
-  const { data, error } = await supabase.from("kens").insert(ken);
+  const { data, error } = await supabase.from("kens").insert([ken]).select().single();
 
   if (error) {
     throw error;
   }
 
-  return data;
+  return data as Ken;
 };
 
 export const updateKen = async (ken: KenUpdate) => {
-  const { data, error } = await supabase.from("kens").update(ken).eq("id", ken.id);
+  const { data, error } = await supabase.from("kens").update(ken).eq("id", ken.id).select().single();
 
   if (error) {
     throw error;
   }
 
-  return data;
+  return data as Ken;
 };
 
 export const deleteKen = async (id: number) => {

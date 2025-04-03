@@ -3,8 +3,8 @@ import { getKen } from "../services/ken";
 import { Ken } from "../types";
 
 export default function useGetKen(id?: number) {
-  return useSWR<Ken>({
-    key: id ? ["kens", id] : null,
-    fetcher: getKen(id!),
-  });
+  return useSWR<Ken>(
+    id ? ["kens", id] : null,
+    id ? () => getKen(id) : null
+  );
 }

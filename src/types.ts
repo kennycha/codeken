@@ -5,13 +5,14 @@ export type Ken = {
   css: string;
   js: string;
   tags: string[];
+  user_id: string;
   created_at: string;
   updated_at: string;
 };
 
 export type KenInsert = Omit<Ken, "id" | "created_at" | "updated_at">;
 
-export type KenUpdate = { id: number } & Partial<KenInsert>;
+export type KenUpdate = { id: number, user_id: string } & Partial<KenInsert>;
 
 export type FilterOptions = {
   tag: string | null;
