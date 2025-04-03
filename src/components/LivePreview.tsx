@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
+import { COLORS } from "../constants";
 
 const DEFAULT_CSS = `
   html, body {
@@ -56,5 +57,5 @@ const Iframe = styled.iframe`
   width: 100%;
   height: 100%;
   border: none;
-  background-color: white;
+  background-color: ${COLORS.white};
 `;

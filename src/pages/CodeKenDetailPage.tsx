@@ -1,17 +1,25 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Split from "react-split";
 import styled from "styled-components";
 import Button from "../components/Button";
 import CodeEditor from "../components/CodeEditor";
+import CodePenIcon from "../components/Icons/CodePenIcon";
 import LivePrewview from "../components/LivePreview";
+import Skeleton from "../components/Skeleton";
+import { COLORS } from "../constants";
+import useEditKen from "../hooks/useEditKen";
 import useGetKen from "../hooks/useGetKen";
+import { useAuth } from "../store/AuthContext";
 
 export default function CodeKenDetailPage() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { data: ken, isLoading: isLoadingKen } = useGetKen(
     id ? parseInt(id) : undefined
   );
+  const { editKen } = useEditKen();
+  const { user } = useAuth();
 
   const [html, setHtml] = useState("");
   const [css, setCss] = useState("");
@@ -21,23 +29,53 @@ export default function CodeKenDetailPage() {
   const [tempCss, setTempCss] = useState("");
   const [tempJs, setTempJs] = useState("");
 
+  useEffect(() => {
+    if (ken) {
+      setHtml(ken.html);
+      setCss(ken.css);
+      setJs(ken.js);
+    }
+  }, [ken]);
+
   const handleApplyButtonClick = () => {
     setHtml(tempHtml);
     setCss(tempCss);
     setJs(tempJs);
   };
 
-  const handleSaveButtonClick = () => {
-    setHtml(tempHtml);
-    setCss(tempCss);
-    setJs(tempJs);
+  const handleSaveButtonClick = async () => {
+    if (!ken || !user) return;
+
+    await editKen({
+      id: ken.id,
+      html: tempHtml,
+      css: tempCss,
+      js: tempJs,
+      user_id: user.id,
+    });
   };
+
+  useEffect(() => {
+    if (!isLoadingKen && !ken) {
+      navigate("/not-found");
+    }
+  }, [isLoadingKen, ken, navigate]);
+
+  if (isLoadingKen) {
+    return <Skeleton />;
+  }
 
   return (
     <Container>
       <Header>
-        <Button onClick={handleApplyButtonClick}>Apply</Button>
-        <Button onClick={handleSaveButtonClick}>Save</Button>
+        <Link to={"/"}>
+          <CodePenIcon />
+        </Link>
+        <Title>{ken?.title ?? ""}</Title>
+        <Buttons>
+          <Button onClick={handleApplyButtonClick}>Apply</Button>
+          <Button onClick={handleSaveButtonClick}>Save</Button>
+        </Buttons>
       </Header>
       <VerticalSplit
         sizes={[50, 50]}
@@ -78,8 +116,8 @@ const Container = styled.div`
 `;
 
 const Header = styled.div`
-  display: flex;
-  justify-content: flex-end;
+  display: grid;
+  grid-template-columns: auto auto 1fr;
   align-items: center;
   column-gap: 8px;
   height: 48px;
@@ -88,6 +126,19 @@ const Header = styled.div`
   top: 0;
   left: 0;
   right: 0;
+`;
+
+const Title = styled.h1`
+  font-size: 24px;
+  font-weight: 600;
+  color: ${COLORS.white};
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  column-gap: 8px;
 `;
 
 const StyledSplit = styled(Split)`
