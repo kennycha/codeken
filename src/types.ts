@@ -12,3 +12,12 @@ export type Ken = {
 export type KenInsert = Omit<Ken, "id" | "created_at" | "updated_at">;
 
 export type KenUpdate = { id: number } & Partial<KenInsert>;
+
+export type FilterOptions = {
+  tag: string | null;
+};
+
+export type PaginationOptions = {
+  page: number;
+  size: number;
+};

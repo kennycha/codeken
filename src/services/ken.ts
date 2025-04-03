@@ -1,17 +1,23 @@
-import { Ken, KenInsert, KenUpdate } from "../types";
+import { FilterOptions, Ken, KenInsert, KenUpdate, PaginationOptions } from "../types";
 import { supabase } from "./client";
 
-export const getKens = async () => {
-  const { data, error } = await supabase
-    .from("kens")
-    .select("*")
-    .order("created_at", { ascending: false });
+export const getKens = async ({ page, size, tag }: FilterOptions & PaginationOptions) => {
+  const from = (page - 1) * size;
+  const to = from + size - 1;
+
+  let query = supabase.from("kens").select("*", { count: "exact" }).order("created_at", { ascending: false });
+
+  if (tag) {
+    query = query.contains("tags", tag);
+  }
+
+  const { data, count, error } = await query.range(from, to);
 
   if (error) {
     throw error;
   }
 
-  return data as Ken[];
+  return { kens: data as Ken[], total: count ?? 0 };
 };
 
 export const getKen = async (id: number) => {

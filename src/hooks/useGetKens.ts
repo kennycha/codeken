@@ -1,10 +1,10 @@
 import useSWR from "swr";
 import { getKens } from "../services/ken";
-import { Ken } from "../types";
+import { FilterOptions, Ken, PaginationOptions } from "../types";
 
-export default function useGetKens() {
-  return useSWR<Ken[]>({
-    key: ["kens"],
-    fetcher: getKens,
+export default function useGetKens({ page, size, tag }: FilterOptions & PaginationOptions) {
+  return useSWR<{ kens: Ken[]; total: number }>({
+    key: ["kens", page, size, tag],
+    fetcher: () => getKens({ page, size, tag }),
   });
 }
