@@ -6,7 +6,10 @@ import GithubIcon from "../components/Icons/GithubIcon";
 import PlusIcon from "../components/Icons/PlusIcon";
 import KenCard from "../components/KenCard";
 import Logo from "../components/Logo";
+import Pagination from "../components/Pagination";
 import Profile from "../components/Profile";
+import Skeleton from "../components/Skeleton";
+import TagList from "../components/TagList";
 import {
   COLORS,
   DEFAULT_KEN_FORM,
@@ -17,25 +20,24 @@ import useAddKen from "../hooks/useAddKen";
 import useGetKens from "../hooks/useGetKens";
 import { useAuth } from "../store/AuthContext";
 
+const PAGE_SIZE = 6;
+
 export default function CodeKenListPage() {
   const navigate = useNavigate();
 
-  // @TODO url params로 저장
   const [page, setPage] = useState(1);
-  const [size, setSize] = useState(6);
-  // @TODO 태그 필터링
-
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const { user } = useAuth();
-  // @TODO loading 처리
   const { data = EMPTY_KEN_LIST, isLoading: isLoadingKens } = useGetKens({
     page,
-    size,
-    tag,
+    size: PAGE_SIZE,
+    tag: selectedTag,
   });
   const { addKen } = useAddKen();
 
   const kens = data.kens;
   const isEmpty = kens.length === 0;
+  const totalPages = isLoadingKens ? 1 : Math.ceil(data.total / PAGE_SIZE);
 
   const handleAddButtonClick = async () => {
     if (!user) return;
@@ -51,6 +53,15 @@ export default function CodeKenListPage() {
     }
   };
 
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleTagSelect = (tag: string | null) => {
+    setSelectedTag(tag);
+    setPage(1);
+  };
+
   return (
     <Container>
       <Header>
@@ -58,32 +69,45 @@ export default function CodeKenListPage() {
         <Buttons>
           {user && (
             <AddButton onClick={handleAddButtonClick}>
-              <PlusIcon /> Ken
+              <PlusIcon /> <span>Ken</span>
             </AddButton>
           )}
           <Link to={EXTERNAL_LINKS.GITHUB_REPOSITORY} target="_blank">
             <GithubButton>
               <GithubIcon />
-              Github
+              <span>Github</span>
             </GithubButton>
           </Link>
         </Buttons>
       </Header>
       <Profile />
       <Content>
-        <TagList></TagList>
-        {isEmpty ? (
-          <EmptyKenList>No Kens found matching your condition.</EmptyKenList>
-        ) : (
+        <TagList selectedTag={selectedTag} onSelect={handleTagSelect} />
+        {isLoadingKens ? (
           <KenList>
-            {data.kens.map((ken) => (
-              <Link to={`/${ken.id}`} key={ken.id}>
-                <InteractionBlocker>
-                  <KenCard ken={ken} />
-                </InteractionBlocker>
-              </Link>
+            {Array.from({ length: PAGE_SIZE }).map((_, index) => (
+              <Skeleton key={index} />
             ))}
           </KenList>
+        ) : isEmpty ? (
+          <EmptyKenList>No Kens found matching your condition.</EmptyKenList>
+        ) : (
+          <>
+            <KenList>
+              {data.kens.map((ken) => (
+                <StyledLink to={`/${ken.id}`} key={ken.id}>
+                  <InteractionBlocker>
+                    <KenCard ken={ken} />
+                  </InteractionBlocker>
+                </StyledLink>
+              ))}
+            </KenList>
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </>
         )}
       </Content>
     </Container>
@@ -94,6 +118,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   row-gap: 16px;
+  padding-bottom: 32px;
 `;
 
 const Header = styled.header`
@@ -115,12 +140,24 @@ const AddButton = styled(Button)`
   display: flex;
   align-items: center;
   gap: 4px;
+
+  @media (max-width: 480px) {
+    span {
+      display: none;
+    }
+  }
 `;
 
 const GithubButton = styled(Button)`
   display: flex;
   align-items: center;
   gap: 4px;
+
+  @media (max-width: 480px) {
+    span {
+      display: none;
+    }
+  }
 `;
 
 const Content = styled.main`
@@ -129,8 +166,6 @@ const Content = styled.main`
   margin: 0 auto;
   padding: 0 30px;
 `;
-
-const TagList = styled.div``;
 
 const KenList = styled.div`
   display: grid;
@@ -146,7 +181,29 @@ const KenList = styled.div`
   }
 `;
 
-const EmptyKenList = styled.div``;
+const EmptyKenList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 48px;
+  background-color: ${COLORS.gray};
+  border-radius: 8px;
+  color: ${COLORS.white};
+  font-size: 18px;
+  text-align: center;
+  min-height: 200px;
+
+  &::before {
+    content: "😢";
+    font-size: 48px;
+  }
+`;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+`;
 
 const InteractionBlocker = styled.div`
   pointer-events: none;

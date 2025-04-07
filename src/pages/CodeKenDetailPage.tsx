@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Split from "react-split";
 import styled from "styled-components";
@@ -24,18 +24,34 @@ export default function CodeKenDetailPage() {
   const [html, setHtml] = useState("");
   const [css, setCss] = useState("");
   const [js, setJs] = useState("");
+  const [title, setTitle] = useState("");
 
   const [tempHtml, setTempHtml] = useState("");
   const [tempCss, setTempCss] = useState("");
   const [tempJs, setTempJs] = useState("");
+
+  const canApply = useMemo(() => {
+    return tempHtml !== html || tempCss !== css || tempJs !== js;
+  }, [html, css, js, tempHtml, tempCss, tempJs]);
+
+  const canSave = useMemo(() => {
+    if (!ken) return false;
+
+    return canApply || ken.title !== title;
+  }, [ken, canApply, title]);
 
   useEffect(() => {
     if (ken) {
       setHtml(ken.html);
       setCss(ken.css);
       setJs(ken.js);
+      setTitle(ken.title);
     }
   }, [ken]);
+
+  const handleTitleBlur = (e: React.FocusEvent<HTMLHeadingElement>) => {
+    setTitle(e.currentTarget.textContent ?? "");
+  };
 
   const handleApplyButtonClick = () => {
     setHtml(tempHtml);
@@ -46,8 +62,14 @@ export default function CodeKenDetailPage() {
   const handleSaveButtonClick = async () => {
     if (!ken || !user) return;
 
+    if (title.length === 0) {
+      alert("Title is required");
+      return;
+    }
+
     await editKen({
       id: ken.id,
+      title: title,
       html: tempHtml,
       css: tempCss,
       js: tempJs,
@@ -71,10 +93,22 @@ export default function CodeKenDetailPage() {
         <Link to={"/"}>
           <CodePenIcon />
         </Link>
-        <Title>{ken?.title ?? ""}</Title>
+        <Title
+          contentEditable={user?.id === ken?.user_id}
+          onBlur={handleTitleBlur}
+          suppressContentEditableWarning
+        >
+          {title}
+        </Title>
         <Buttons>
-          <Button onClick={handleApplyButtonClick}>Apply</Button>
-          <Button onClick={handleSaveButtonClick}>Save</Button>
+          <Button onClick={handleApplyButtonClick} disabled={!canApply}>
+            Apply
+          </Button>
+          {user?.id === ken?.user_id && (
+            <Button onClick={handleSaveButtonClick} disabled={!canSave}>
+              Save
+            </Button>
+          )}
         </Buttons>
       </Header>
       <VerticalSplit
@@ -128,10 +162,26 @@ const Header = styled.div`
   right: 0;
 `;
 
-const Title = styled.h1`
+const Title = styled.h1<{ contentEditable?: boolean }>`
   font-size: 24px;
   font-weight: 600;
   color: ${COLORS.white};
+  outline: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+
+  ${({ contentEditable }) =>
+    contentEditable &&
+    `
+    &:hover {
+      background-color: ${COLORS.gray};
+    }
+
+    &:focus {
+      background-color: ${COLORS.gray};
+    }
+  `}
 `;
 
 const Buttons = styled.div`

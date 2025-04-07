@@ -2,10 +2,11 @@ import { Ken, KenInsert } from "./types";
 
 export const COLORS = {
   white: '#ffffff',
-  lightGray: '#5a5f72',
-  gray: '#2c303a',
-  darkGray: '#131417',
-  black: '#000000',
+  lightGray: '#575c6c',
+  gray: '#444857',
+  darkGray: '#2d2d2d',
+  black: '#1e1e1e',
+  primary: '#3467FE',
 }
 
 export const DEFAULT_KEN_FORM: Omit<KenInsert, "user_id"> = {
@@ -23,4 +24,12 @@ export const EXTERNAL_LINKS = {
   GITHUB_REPOSITORY: "https://github.com/kennycha/codeken",
 };
 
-export const TAGS = []
+export const TAGS = [
+  '3D',
+  'Audio',
+  'Animation',
+  'CSS',
+  'Game',
+  'Shader',
+  'SVG',
+]

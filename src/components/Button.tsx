@@ -19,4 +19,15 @@ const StyledButton = styled.button`
   &:hover {
     background-color: #575c6c;
   }
+
+  &:disabled {
+    background-color: #2d2f38;
+    color: #8c8e96;
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px;
+  }
 `;

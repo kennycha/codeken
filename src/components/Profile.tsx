@@ -41,8 +41,8 @@ const Nickname = styled.div`
 `;
 
 const ProfileImage = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 128px;
+  height: 128px;
 `;
 
 const Location = styled.div`

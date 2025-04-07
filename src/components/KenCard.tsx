@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { COLORS } from "../constants";
 import { Ken } from "../types";
 import LivePrewview from "./LivePreview";
+import TagBadge from "./TagBadge";
 
 type Props = {
   ken: Ken;
@@ -10,8 +11,17 @@ type Props = {
 export default function KenCard({ ken }: Props) {
   return (
     <Container>
-      <LivePrewview html={ken.html} css={ken.css} js={ken.js} />
-      <Title>{ken.title}</Title>
+      <Preview>
+        <LivePrewview html={ken.html} css={ken.css} js={ken.js} />
+      </Preview>
+      <Content>
+        <Title>{ken.title}</Title>
+        <Tags>
+          {ken.tags.map((tag) => (
+            <TagBadge key={tag} tag={tag} />
+          ))}
+        </Tags>
+      </Content>
     </Container>
   );
 }
@@ -23,13 +33,33 @@ const Container = styled.div`
   width: 100%;
   aspect-ratio: 380/300;
   overflow: hidden;
-  background-color: ${COLORS.gray};
+  background: linear-gradient(145deg, ${COLORS.gray}, ${COLORS.darkGray});
+`;
+
+const Preview = styled.div`
+  flex: 1;
+  background-color: ${COLORS.black};
+  overflow: hidden;
+`;
+
+const Content = styled.div`
+  padding: 16px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
 `;
 
 const Title = styled.div`
-  width: 100%;
   color: ${COLORS.white};
   font-size: 18px;
   font-weight: 600;
-  padding: 16px;
+  margin-bottom: 8px;
+`;
+
+const Tags = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
 `;
