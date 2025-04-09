@@ -17,4 +17,9 @@ export const GlobalStyle = createGlobalStyle`
   button, input, textarea {
     font-family: inherit;
   }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 `;

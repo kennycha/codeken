@@ -22,6 +22,6 @@ export default function CodePenIcon() {
 }
 
 const Container = styled.div`
-  width: 24px;
-  height: 24px;
+  width: 40px;
+  height: 40px;
 `;

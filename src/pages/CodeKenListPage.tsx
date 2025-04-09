@@ -9,12 +9,12 @@ import Logo from "../components/Logo";
 import Pagination from "../components/Pagination";
 import Profile from "../components/Profile";
 import Skeleton from "../components/Skeleton";
-import TagList from "../components/TagList";
-import { COLORS, DEFAULT_KEN_FORM, EMPTY_KEN_LIST, EXTERNAL_LINKS } from "../constants";
+import { COLORS, DEFAULT_KEN_FORM, EMPTY_KEN_LIST, EXTERNAL_LINKS, TAGS } from "../constants";
 import useAddKen from "../hooks/useAddKen";
 import useGetKens from "../hooks/useGetKens";
 import { useAuth } from "../store/AuthContext";
 import WithTilt from "../components/WithTilt";
+import TagBadge from "../components/TagBadge";
 
 const PAGE_SIZE = 6;
 
@@ -53,8 +53,8 @@ export default function CodeKenListPage() {
     setPage(newPage);
   };
 
-  const handleTagSelect = (tag: string | null) => {
-    setSelectedTag(tag);
+  const createTagClickHandler = (tag: string) => () => {
+    setSelectedTag((prev) => (prev === tag ? null : tag));
     setPage(1);
   };
 
@@ -78,7 +78,13 @@ export default function CodeKenListPage() {
       </Header>
       <Profile />
       <Content>
-        <TagList selectedTag={selectedTag} onSelect={handleTagSelect} />
+        <Tags>
+          {TAGS.map((tag) => (
+            <TagBadgeWrapper key={tag} onClick={createTagClickHandler(tag)}>
+              <TagBadge tag={tag} isSelected={selectedTag === tag} />
+            </TagBadgeWrapper>
+          ))}
+        </Tags>
         {isLoadingKens ? (
           <KenList>
             {Array.from({ length: PAGE_SIZE }).map((_, index) => (
@@ -91,13 +97,13 @@ export default function CodeKenListPage() {
           <>
             <KenList>
               {data.kens.map((ken) => (
-                <StyledLink to={`/${ken.id}`} key={ken.id}>
+                <Link to={`/${ken.id}`} key={ken.id}>
                   <WithTilt>
                     <InteractionBlocker>
                       <KenCard ken={ken} />
                     </InteractionBlocker>
                   </WithTilt>
-                </StyledLink>
+                </Link>
               ))}
             </KenList>
             <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} />
@@ -161,6 +167,17 @@ const Content = styled.main`
   padding: 0 30px;
 `;
 
+const Tags = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+`;
+
+const TagBadgeWrapper = styled.div`
+  cursor: pointer;
+`;
+
 const KenList = styled.div`
   display: grid;
   grid-template-columns: repeat(1, 1fr);
@@ -193,10 +210,6 @@ const EmptyKenList = styled.div`
     content: "😢";
     font-size: 48px;
   }
-`;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
 `;
 
 const InteractionBlocker = styled.div`

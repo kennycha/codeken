@@ -18,7 +18,7 @@ export default function KenCard({ ken }: Props) {
         <Title>{ken.title}</Title>
         <Tags>
           {ken.tags.map((tag) => (
-            <TagBadge key={tag} tag={tag} />
+            <TagBadge key={tag} tag={tag} size="small" />
           ))}
         </Tags>
       </Content>
@@ -44,11 +44,7 @@ const Preview = styled.div`
 
 const Content = styled.div`
   padding: 16px;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.2) 100%
-  );
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%);
 `;
 
 const Title = styled.div`

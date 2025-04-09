@@ -8,7 +8,7 @@ export const getKens = async ({ page, size, tag }: FilterOptions & PaginationOpt
   let query = supabase.from("kens").select("*", { count: "exact" }).order("created_at", { ascending: false });
 
   if (tag) {
-    query = query.contains("tags", tag);
+    query = query.contains("tags", [tag]);
   }
 
   const { data, count, error } = await query.range(from, to);
