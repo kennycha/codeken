@@ -10,15 +10,11 @@ import Pagination from "../components/Pagination";
 import Profile from "../components/Profile";
 import Skeleton from "../components/Skeleton";
 import TagList from "../components/TagList";
-import {
-  COLORS,
-  DEFAULT_KEN_FORM,
-  EMPTY_KEN_LIST,
-  EXTERNAL_LINKS,
-} from "../constants";
+import { COLORS, DEFAULT_KEN_FORM, EMPTY_KEN_LIST, EXTERNAL_LINKS } from "../constants";
 import useAddKen from "../hooks/useAddKen";
 import useGetKens from "../hooks/useGetKens";
 import { useAuth } from "../store/AuthContext";
+import WithTilt from "../components/WithTilt";
 
 const PAGE_SIZE = 6;
 
@@ -96,17 +92,15 @@ export default function CodeKenListPage() {
             <KenList>
               {data.kens.map((ken) => (
                 <StyledLink to={`/${ken.id}`} key={ken.id}>
-                  <InteractionBlocker>
-                    <KenCard ken={ken} />
-                  </InteractionBlocker>
+                  <WithTilt>
+                    <InteractionBlocker>
+                      <KenCard ken={ken} />
+                    </InteractionBlocker>
+                  </WithTilt>
                 </StyledLink>
               ))}
             </KenList>
-            <Pagination
-              currentPage={page}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
+            <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} />
           </>
         )}
       </Content>
