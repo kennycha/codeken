@@ -6,6 +6,7 @@ import JsIcon from "./Icons/JsIcon";
 
 const EDITOR_OPTIONS = {
   fontSize: 14,
+  tabSize: 2,
   minimap: { enabled: false },
   automaticLayout: true,
 };
