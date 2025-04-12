@@ -1,4 +1,4 @@
-import MonacoEditor from "react-monaco-editor";
+import { Editor } from "@monaco-editor/react";
 import styled from "styled-components";
 import CssIcon from "./Icons/CssIcon";
 import HtmlIcon from "./Icons/HtmlIcon";
@@ -20,16 +20,20 @@ export default function CodeEditor({ language, value, onChange }: Props) {
   const Icon =
     language === "html" ? HtmlIcon : language === "css" ? CssIcon : JsIcon;
 
+  const handleEditorChange = (value: string | undefined) => {
+    onChange(value ?? "");
+  };
+
   return (
     <Container>
       <Title>
         <Icon />
         {language.toUpperCase()}
       </Title>
-      <MonacoEditor
-        language={language}
+      <Editor
+        language={language === "js" ? "javascript" : language}
         value={value}
-        onChange={onChange}
+        onChange={handleEditorChange}
         height="100%"
         theme="vs-dark"
         options={EDITOR_OPTIONS}
