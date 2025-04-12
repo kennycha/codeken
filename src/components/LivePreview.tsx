@@ -2,15 +2,6 @@ import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { COLORS } from "../constants";
 
-const DEFAULT_CSS = `
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-  }
-`;
-
 type Props = {
   html: string;
   css: string;
@@ -28,7 +19,6 @@ export default function LivePrewview({ html, css, js }: Props) {
         <!DOCTYPE html>
         <html>
           <head>
-            <style>${DEFAULT_CSS}</style>
             <style>${css}</style>
           </head>
           <body>
