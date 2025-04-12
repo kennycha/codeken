@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import AdminLoginPage from "./pages/AdminLoginPage";
+import AuthPage from "./pages/AuthPage";
 import CodeKenDetailPage from "./pages/CodeKenDetailPage";
 import CodeKenListPage from "./pages/CodeKenListPage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -14,8 +14,8 @@ const router = createBrowserRouter([
     element: <CodeKenDetailPage />,
   },
   {
-    path: "/admin-login",
-    element: <AdminLoginPage />,
+    path: "/auth",
+    element: <AuthPage />,
   },
   {
     path: "/not-found",
