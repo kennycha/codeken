@@ -3,6 +3,7 @@ import styled from "styled-components";
 import CssIcon from "./Icons/CssIcon";
 import HtmlIcon from "./Icons/HtmlIcon";
 import JsIcon from "./Icons/JsIcon";
+import Loading from "./Loading";
 
 const EDITOR_OPTIONS = {
   fontSize: 14,
@@ -17,8 +18,7 @@ type Props = {
 };
 
 export default function CodeEditor({ language, value, onChange }: Props) {
-  const Icon =
-    language === "html" ? HtmlIcon : language === "css" ? CssIcon : JsIcon;
+  const Icon = language === "html" ? HtmlIcon : language === "css" ? CssIcon : JsIcon;
 
   const handleEditorChange = (value: string | undefined) => {
     onChange(value ?? "");
@@ -37,6 +37,7 @@ export default function CodeEditor({ language, value, onChange }: Props) {
         height="100%"
         theme="vs-dark"
         options={EDITOR_OPTIONS}
+        loading={<Loading />}
       />
     </Container>
   );
