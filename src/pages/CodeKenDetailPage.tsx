@@ -7,17 +7,19 @@ import CodeEditor from "../components/CodeEditor";
 import CodePenIcon from "../components/Icons/CodePenIcon";
 import LivePrewview from "../components/LivePreview";
 import Skeleton from "../components/Skeleton";
+import TagBadge from "../components/TagBadge";
 import { COLORS, TAGS } from "../constants";
 import useEditKen from "../hooks/useEditKen";
 import useGetKen from "../hooks/useGetKen";
 import { useAuth } from "../store/AuthContext";
-import TagBadge from "../components/TagBadge";
 import { areStringArraysEqual } from "../utils";
 
 export default function CodeKenDetailPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { data: ken, isLoading: isLoadingKen } = useGetKen(id ? parseInt(id) : undefined);
+  const { data: ken, isLoading: isLoadingKen } = useGetKen(
+    id ? parseInt(id) : undefined
+  );
   const { editKen } = useEditKen();
   const { user } = useAuth();
 
@@ -31,7 +33,10 @@ export default function CodeKenDetailPage() {
   const [tempCss, setTempCss] = useState("");
   const [tempJs, setTempJs] = useState("");
 
-  const appliedTags = useMemo(() => TAGS.filter((tag) => selectedTags.includes(tag)), [selectedTags]);
+  const appliedTags = useMemo(
+    () => TAGS.filter((tag) => selectedTags.includes(tag)),
+    [selectedTags]
+  );
 
   const canApply = useMemo(() => {
     return tempHtml !== html || tempCss !== css || tempJs !== js;
@@ -40,8 +45,14 @@ export default function CodeKenDetailPage() {
   const canSave = useMemo(() => {
     if (!ken) return false;
 
-    return canApply || ken.title !== title || !areStringArraysEqual(selectedTags, ken.tags);
-  }, [ken, canApply, title, selectedTags]);
+    return (
+      ken.html !== tempHtml ||
+      ken.css !== tempCss ||
+      ken.js !== tempJs ||
+      ken.title !== title ||
+      !areStringArraysEqual(selectedTags, ken.tags)
+    );
+  }, [ken, title, selectedTags, tempHtml, tempCss, tempJs]);
 
   useEffect(() => {
     if (ken) {
@@ -50,6 +61,9 @@ export default function CodeKenDetailPage() {
       setJs(ken.js);
       setTitle(ken.title);
       setSelectedTags(ken.tags);
+      setTempHtml(ken.html);
+      setTempCss(ken.css);
+      setTempJs(ken.js);
     }
   }, [ken]);
 
@@ -60,7 +74,9 @@ export default function CodeKenDetailPage() {
   const createTagClickHandler = (tag: string) => () => {
     if (!user) return;
 
-    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
   };
 
   const handleApplyButtonClick = () => {
@@ -105,14 +121,22 @@ export default function CodeKenDetailPage() {
           <CodePenIcon />
         </Link>
         <KenMeta>
-          <Title contentEditable={user?.id === ken?.user_id} onBlur={handleTitleBlur} suppressContentEditableWarning>
+          <Title
+            contentEditable={user?.id === ken?.user_id}
+            onBlur={handleTitleBlur}
+            suppressContentEditableWarning
+          >
             {title}
           </Title>
           {user ? (
             <Tags>
               {TAGS.map((tag) => (
                 <TagBadgeWrapper key={tag} onClick={createTagClickHandler(tag)}>
-                  <TagBadge tag={tag} size="small" isSelected={selectedTags.includes(tag)} />
+                  <TagBadge
+                    tag={tag}
+                    size="small"
+                    isSelected={selectedTags.includes(tag)}
+                  />
                 </TagBadgeWrapper>
               ))}
             </Tags>
