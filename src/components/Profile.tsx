@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { COLORS, EXTERNAL_LINKS } from "../constants";
+import { BASE_PATH, COLORS, EXTERNAL_LINKS } from "../constants";
 
 export default function Profile() {
   return (
@@ -10,7 +10,7 @@ export default function Profile() {
         <Link to={EXTERNAL_LINKS.GITHUB_PROFILE} target="_blank">
           <Nickname>@kennycha</Nickname>
         </Link>
-        <ProfileImage src="profile.jpeg" />
+        <ProfileImage src={`${BASE_PATH}/profile.jpeg`} />
         <Location>Seoul, Korea</Location>
         <Description>Here, I'm collecting twinkles ⭐️</Description>
       </Inner>

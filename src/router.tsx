@@ -1,10 +1,10 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createHashRouter, Navigate } from "react-router-dom";
 import AuthPage from "./pages/AuthPage";
 import CodeKenDetailPage from "./pages/CodeKenDetailPage";
 import CodeKenListPage from "./pages/CodeKenListPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/",
     element: <CodeKenListPage />,
