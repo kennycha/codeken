@@ -14,6 +14,8 @@ import useGetKen from "../hooks/useGetKen";
 import { useAuth } from "../store/AuthContext";
 import { areStringArraysEqual } from "../utils";
 
+type TabType = "html" | "css" | "js";
+
 export default function CodeKenDetailPage() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -32,6 +34,8 @@ export default function CodeKenDetailPage() {
   const [tempHtml, setTempHtml] = useState("");
   const [tempCss, setTempCss] = useState("");
   const [tempJs, setTempJs] = useState("");
+
+  const [activeTab, setActiveTab] = useState<TabType>("html");
 
   const appliedTags = useMemo(
     () => TAGS.filter((tag) => selectedTags.includes(tag)),
@@ -104,6 +108,10 @@ export default function CodeKenDetailPage() {
     });
   };
 
+  const createaTabButtonClickHandler = (tab: TabType) => () => {
+    setActiveTab(tab);
+  };
+
   useEffect(() => {
     if (!isLoadingKen && !ken) {
       navigate("/not-found");
@@ -170,21 +178,73 @@ export default function CodeKenDetailPage() {
         direction="vertical"
         cursor="row-resize"
       >
-        <HorizontalSplit
-          sizes={[33.33, 33.33, 33.33]}
-          minSize={200}
-          expandToMin={false}
-          gutterSize={10}
-          gutterAlign="center"
-          snapOffset={30}
-          dragInterval={1}
-          direction="horizontal"
-          cursor="col-resize"
-        >
-          <CodeEditor language="html" value={tempHtml} onChange={setTempHtml} />
-          <CodeEditor language="css" value={tempCss} onChange={setTempCss} />
-          <CodeEditor language="js" value={tempJs} onChange={setTempJs} />
-        </HorizontalSplit>
+        <ResponsiveWrapper>
+          <DesktopWrapper>
+            <HorizontalSplit
+              sizes={[33.33, 33.33, 33.33]}
+              minSize={200}
+              expandToMin={false}
+              gutterSize={10}
+              gutterAlign="center"
+              snapOffset={30}
+              dragInterval={1}
+              direction="horizontal"
+              cursor="col-resize"
+            >
+              <CodeEditor
+                language="html"
+                value={tempHtml}
+                onChange={setTempHtml}
+              />
+              <CodeEditor
+                language="css"
+                value={tempCss}
+                onChange={setTempCss}
+              />
+              <CodeEditor language="js" value={tempJs} onChange={setTempJs} />
+            </HorizontalSplit>
+          </DesktopWrapper>
+          <MobileWrapper>
+            <TabHeader>
+              <TabButton
+                isActive={activeTab === "html"}
+                onClick={createaTabButtonClickHandler("html")}
+              >
+                HTML
+              </TabButton>
+              <TabButton
+                isActive={activeTab === "css"}
+                onClick={createaTabButtonClickHandler("css")}
+              >
+                CSS
+              </TabButton>
+              <TabButton
+                isActive={activeTab === "js"}
+                onClick={createaTabButtonClickHandler("js")}
+              >
+                JS
+              </TabButton>
+            </TabHeader>
+            <CodeEditor
+              language={activeTab}
+              value={
+                activeTab === "html"
+                  ? tempHtml
+                  : activeTab === "css"
+                  ? tempCss
+                  : tempJs
+              }
+              onChange={
+                activeTab === "html"
+                  ? setTempHtml
+                  : activeTab === "css"
+                  ? setTempCss
+                  : setTempJs
+              }
+            />
+          </MobileWrapper>
+        </ResponsiveWrapper>
+
         <LivePrewview html={html} css={css} js={js} />
       </VerticalSplit>
     </Container>
@@ -282,4 +342,74 @@ const VerticalSplit = styled(StyledSplit)`
 const HorizontalSplit = styled(StyledSplit)`
   flex-direction: row;
   width: 100%;
+`;
+
+const ResponsiveWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  & > div:first-child {
+    display: block;
+  }
+  & > div:last-child {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    & > div:first-child {
+      display: none;
+    }
+    & > div:last-child {
+      display: block;
+    }
+  }
+`;
+
+const TabHeader = styled.div`
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  background-color: #1e1e1e;
+  border-bottom: 1px solid #333;
+
+  @media (max-width: 767px) {
+    display: flex;
+  }
+`;
+
+const TabButton = styled.button<{ isActive: boolean }>`
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  color: ${({ isActive }) => (isActive ? COLORS.white : COLORS.gray)};
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover {
+    color: ${COLORS.white};
+  }
+`;
+
+const DesktopWrapper = styled.div`
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  & > div {
+    height: 100%;
+  }
+`;
+
+const MobileWrapper = styled.div`
+  display: none;
+  width: 100%;
+  height: 100%;
+
+  & > div:not(.gutter) {
+    border: #2d2d2d;
+  }
 `;
