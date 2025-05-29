@@ -207,19 +207,19 @@ export default function CodeKenDetailPage() {
           <MobileWrapper>
             <TabHeader>
               <TabButton
-                isActive={activeTab === "html"}
+                $isActive={activeTab === "html"}
                 onClick={createaTabButtonClickHandler("html")}
               >
                 HTML
               </TabButton>
               <TabButton
-                isActive={activeTab === "css"}
+                $isActive={activeTab === "css"}
                 onClick={createaTabButtonClickHandler("css")}
               >
                 CSS
               </TabButton>
               <TabButton
-                isActive={activeTab === "js"}
+                $isActive={activeTab === "js"}
                 onClick={createaTabButtonClickHandler("js")}
               >
                 JS
@@ -379,11 +379,11 @@ const TabHeader = styled.div`
   }
 `;
 
-const TabButton = styled.button<{ isActive: boolean }>`
+const TabButton = styled.button<{ $isActive: boolean }>`
   padding: 8px 16px;
   background: none;
   border: none;
-  color: ${({ isActive }) => (isActive ? COLORS.white : COLORS.gray)};
+  color: ${({ $isActive }) => ($isActive ? COLORS.white : COLORS.gray)};
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
