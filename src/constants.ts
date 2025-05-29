@@ -1,5 +1,7 @@
 import { Ken, KenInsert } from "./types";
 
+export const BASE_PATH = import.meta.env.BASE_URL ?? '';
+
 export const COLORS = {
   white: '#ffffff',
   lightGray: '#575c6c',
