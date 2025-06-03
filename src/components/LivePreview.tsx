@@ -23,7 +23,11 @@ export default function LivePrewview({ html, css, js }: Props) {
           </head>
           <body>
             ${html}
-            <script>${js}</script>
+            <script>
+              (function() {
+                ${js}
+              })();
+            </script>
           </body>
         </html>
       `);
