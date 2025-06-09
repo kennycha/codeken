@@ -19,7 +19,8 @@
     "react-router-dom": "^7.4.0",
     "react-split": "^2.0.14",
     "styled-components": "^6.1.16",
-    "swr": "^2.3.3"
+    "swr": "^2.3.3",
+    "use-query-params": "^2.2.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

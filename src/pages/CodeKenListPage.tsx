@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Button from "../components/Button";
@@ -15,17 +15,21 @@ import useGetKens from "../hooks/useGetKens";
 import { useAuth } from "../store/AuthContext";
 import WithTilt from "../components/WithTilt";
 import TagBadge from "../components/TagBadge";
+import { NumberParam, useQueryParam } from "use-query-params";
 
 const PAGE_SIZE = 6;
 
 export default function CodeKenListPage() {
   const navigate = useNavigate();
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useQueryParam("page", NumberParam);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const { user } = useAuth();
+
+  const memoizedPage = useMemo(() => page ?? 1, [page]);
+
   const { data = EMPTY_KEN_LIST, isLoading: isLoadingKens } = useGetKens({
-    page,
+    page: memoizedPage,
     size: PAGE_SIZE,
     tag: selectedTag,
   });
@@ -106,7 +110,7 @@ export default function CodeKenListPage() {
                 </Link>
               ))}
             </KenList>
-            <Pagination currentPage={page} totalPages={totalPages} onPageChange={handlePageChange} />
+            <Pagination currentPage={memoizedPage} totalPages={totalPages} onPageChange={handlePageChange} />
           </>
         )}
       </Content>
